@@ -1,28 +1,6 @@
 .App {
   text-align: center;
-}
-.top-nav{
-  padding-top: 20px;
-  padding-left: 20px;
-  display: -webkit-flex;
-  display: flex;
- 
-  -webkit-align-items: stretch;
-  align-items: stretch;
-
-}
-.top-nav-item{
-  display: flex;
-  align-items: center;
-  padding-left: 1000px;
-}
-.top-nav-item-list{
-  list-style-type: none;
-  padding-right: 50px;
-  font-weight: 600;
-
-}
-
+  }
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
@@ -40,10 +18,7 @@
   color: white;
   padding-top: 800px;
 }
-.header-middle-area{
-  -webkit-box-flex: 1;
-  flex: 1;
-}
+
 a.link{
   text-decoration:none;
   font-weight: 900;
