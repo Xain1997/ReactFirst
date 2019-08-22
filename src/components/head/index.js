@@ -16,7 +16,7 @@ export function Head() {
               About US
             </Link>
           </li>
-          <li class="top-nav-item-list link hover">
+          <li className="top-nav-item-list link hover">
             <Link to="/contact" className="link">
               Contact US
             </Link>

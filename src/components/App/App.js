@@ -1,33 +1,37 @@
 import React from 'react';
 import './App.scss';
-import { BrowserRouter as Router, Route, Redirect, withRouter} from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect, withRouter } from "react-router-dom";
 import About from '../about';
 import Contact from '../contact';
-import Home from '../home';
-
+import MyComponent from '../home';
+import { Head } from '../head';
 
 function App() {
   return (
     <Router>
-        <div>
-          <AuthButton/>
-        </div>
-        <Route exact path="/" component={Home} />
+      <div>
+
+        <AuthButton />
+
+        <Route exact path="/" component={MyComponent} />
         <Route path="/about" component={About} />
         <Route path="/login" component={Login} />
         <PrivateRoute path="/contact" component={Contact} />
+      </div>
     </Router>
   );
 }
+
+
 const fakeAuth = {
-  isAuthenticated: false,
+  isAuthenticated: localStorage.getItem("auth") ? !0 : !1,
   authenticate(cb) {
-    this.isAuthenticated = true;
-    setTimeout(cb, 10); // fake async
+    this.isAuthenticated = !0;
+    setTimeout(cb, 100); // fake async
   },
   signout(cb) {
-    this.isAuthenticated = false;
-    setTimeout(cb, 10);
+    this.isAuthenticated = !1;
+    setTimeout(cb, 100);
   }
 };
 const AuthButton = withRouter(
@@ -37,6 +41,8 @@ const AuthButton = withRouter(
         Welcome!{" "}
         <button
           onClick={() => {
+            localStorage.clear('auth')
+
             fakeAuth.signout(() => history.push("/"));
           }}
         >
@@ -44,8 +50,9 @@ const AuthButton = withRouter(
         </button>
       </p>
     ) : (
-      <p>You are not logged in.</p>
-    )
+        <p>You are not logged in.</p>
+
+      )
 );
 
 function PrivateRoute({ component: Component, ...rest }) {
@@ -56,23 +63,24 @@ function PrivateRoute({ component: Component, ...rest }) {
         fakeAuth.isAuthenticated ? (
           <Component {...props} />
         ) : (
-          <Redirect
-            to={{
-              pathname: "/",
-              state: { from: props.location }
-            }}
-          />
-        )
+            <Redirect
+              to={{
+                pathname: "/login",
+                state: { from: props.location }
+              }}
+            />
+          )
       }
     />
   );
 }
-class Login {
-  state = { redirectToReferrer: false };
+class Login extends React.Component {
+  state = { redirectToReferrer: !1 };
 
   login = () => {
+    localStorage.setItem('auth', !0)
     fakeAuth.authenticate(() => {
-      this.setState({ redirectToReferrer: true });
+      this.setState({ redirectToReferrer: !0 });
     });
   };
 
@@ -84,9 +92,12 @@ class Login {
 
     return (
       <div>
+        <Head />
         <p>You must log in to view the page at {from.pathname}</p>
         <button onClick={this.login}>Log in</button>
+
       </div>
+
     );
   }
 }
