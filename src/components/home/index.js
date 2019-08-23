@@ -1,62 +1,78 @@
 import React from 'react';
-import {Head} from'../head';
+//import { Head } from '../head';
+import Contacts from '../conct';
+import Items from '../conc1';
 
-  class MyComponent extends React.Component {
-    
-    constructor(props) {
-      super(props);
-      this.state = {
-        error: null,
-        isLoaded: false,
-        items: []
-      };
+class MyComponent extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      contacts: [],
+      items: [],
+      isLoaded: false,
+      isLoad: false
+    };
+
+  }
+
+  componentDidMount() {
+    fetch("http://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(
+        (result) => {
+
+          this.setState({
+            contacts: result
+          })
+
+        }
+      )
+    fetch("https://jsonplaceholder.typicode.com/todos/1")
+      .then(res => res.json())
+      .then(
+        (data) => {
+
+          this.setState({
+            items: data,
+            isLoaded: true
+          })
+
+        }
+      )
+  }
+  handleUpdate = (id) => {
+    this.setState({
+      isLoad: true
+    })
+    fetch("https://jsonplaceholder.typicode.com/todos/" + id)
+      .then(res => res.json())
+      .then(
+        (data) => {
+
+          this.setState({
+            items: data,
+            isLoad: false
+          })
+
+        }
+      )
+  }
+  render() {
+    const { isLoaded } = this.state;
+    if (!isLoaded) {
+      return <div>Loading...</div>;
     }
-  
-    componentDidMount() {
-      fetch("https://jsonplaceholder.typicode.com/todos/2")
-        .then(res => res.json())
-        .then(
-          (result) => {
-            
-            this.setState({
-              isLoaded: true,
-              items: result
-            });
-          },
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
-          (error) => {
-            this.setState({
-              isLoaded: true,
-              error
-            });
-          }
-        )
-    }
-  
-    render() {
-      const { error, isLoaded, items } = this.state;
-      
-      if (error) {
-        return <div>Error: {error.message}</div>;
-      } else if (!isLoaded) {
-        return <div>Loading...</div>;
-      } else {
-        return (
-          
-          <div><Head/>
-            {items.title}
-          </div>
-          /*<ul>
-            {items.map(item => (
-              <li key={item.userId}>
-                {item.name} {item.price}
-              </li>
-            ))}
-          </ul>*/
-        );
-      }
+    else {
+      return (
+        <div>
+
+          <Items items={this.state} handleUpdate={this.handleUpdate.bind(this)} />
+
+          <Contacts contacts={this.state.contacts} />
+        </div>
+      );
     }
   }
+}
 export default MyComponent;
